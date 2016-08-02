@@ -1,1 +1,1 @@
-# scaling-fortnight
+repo of ideas and studies
