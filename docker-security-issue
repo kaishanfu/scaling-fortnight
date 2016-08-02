@@ -1,0 +1,24 @@
+Docker is a truly awesome tools, much less weighted than the virtual machines, I love to use it.
+
+But it has its own security vulnerability, one big issue is container may share the same user namespace with
+the host.
+
+User namespace basically means the uid/gid, you can obtain anyone's uid/gid by using the id command
+%id
+uid=977(mulin) gid=500(rnd) groups=500(rnd)
+
+or
+%id another_user's_login
+
+with the uid/gid in hand, one may be able to start a container and mount the host /home directory such as
+
+%docker run ‐‐rm ‐u some_uid:some_gid ‐v /home:/home ‐it centos
+
+Opps, now the uid/gid security measure is circumvented. Big security risk, imaging docker is intended to be
+used by multi tenants ...
+
+To fix this problem,
+
+Docker 1.10 supports user namespace at daemon level by using ‐‐userns‐remap to prevent uid/gid leak.
+
+effectively, a 0:0 uid/gid such as root in container will be mapped to a range offset such as 4000:4000.
